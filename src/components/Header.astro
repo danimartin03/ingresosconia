@@ -1,0 +1,148 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/blog', label: 'Blog' },
+  { href: '/recursos', label: 'Recursos' },
+  { href: '/sobre-mi', label: 'Sobre mí' },
+  { href: '/contacto', label: 'Contacto' },
+];
+
+const categories = [
+  { href: '/categoria/ia', label: 'IA y Automatización' },
+  { href: '/categoria/shopify', label: 'Shopify' },
+  { href: '/categoria/ganar-dinero', label: 'Ganar Dinero' },
+  { href: '/categoria/herramientas', label: 'Herramientas' },
+];
+
+function isActive(href: string) {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
+---
+
+<header class="sticky top-0 z-40 w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+  <div class="container-xl">
+    <nav class="flex items-center justify-between h-16">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 font-extrabold text-xl text-primary-900 dark:text-white shrink-0">
+        <span class="w-8 h-8 bg-primary-900 text-white rounded-lg flex items-center justify-center text-sm font-black">$</span>
+        <span>Ingresos<span class="text-accent-500">ConIA</span></span>
+      </a>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-1">
+        <a
+          href="/"
+          class={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive('/') && currentPath === '/' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-900 dark:text-primary-300' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+        >
+          Inicio
+        </a>
+
+        <!-- Categorías dropdown -->
+        <div class="relative group">
+          <button class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            Categorías
+            <svg class="w-3.5 h-3.5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="absolute top-full left-0 pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 w-52 py-2">
+              {categories.map(cat => (
+                <a
+                  href={cat.href}
+                  class="block px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
+                >
+                  {cat.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive(link.href) ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-900 dark:text-primary-300' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+
+      <!-- Dark mode toggle + mobile menu -->
+      <div class="flex items-center gap-2">
+        <button
+          id="dark-toggle"
+          class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          aria-label="Cambiar modo oscuro/claro"
+        >
+          <svg id="icon-sun" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          <svg id="icon-moon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+
+        <!-- Mobile hamburger -->
+        <button
+          id="mobile-menu-btn"
+          class="md:hidden p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+        >
+          <svg id="icon-menu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="md:hidden hidden border-t border-gray-100 dark:border-gray-700 py-4">
+      <div class="flex flex-col gap-1">
+        <a href="/" class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Inicio</a>
+        <a href="/blog" class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Blog</a>
+        <div class="px-4 py-1 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Categorías</div>
+        {categories.map(cat => (
+          <a href={cat.href} class="pl-8 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">{cat.label}</a>
+        ))}
+        <a href="/recursos" class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Recursos</a>
+        <a href="/sobre-mi" class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Sobre mí</a>
+        <a href="/contacto" class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Contacto</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  // Dark mode toggle
+  document.getElementById('dark-toggle').addEventListener('click', function () {
+    const html = document.documentElement;
+    if (html.classList.contains('dark')) {
+      html.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      html.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  });
+
+  // Mobile menu
+  var btn = document.getElementById('mobile-menu-btn');
+  var menu = document.getElementById('mobile-menu');
+  var iconMenu = document.getElementById('icon-menu');
+  var iconClose = document.getElementById('icon-close');
+  btn.addEventListener('click', function () {
+    var open = menu.classList.toggle('hidden');
+    iconMenu.classList.toggle('hidden', !open);
+    iconClose.classList.toggle('hidden', open);
+    btn.setAttribute('aria-expanded', String(!open));
+  });
+</script>

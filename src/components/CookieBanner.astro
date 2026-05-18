@@ -1,0 +1,58 @@
+---
+// Cookie consent banner — required under LOPD-GDD and EU Cookie Directive in Spain
+---
+
+<div
+  id="cookie-banner"
+  class="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-2xl"
+  role="alertdialog"
+  aria-labelledby="cookie-title"
+  aria-describedby="cookie-desc"
+  style="display:none"
+>
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center gap-4">
+    <div class="flex-1">
+      <p id="cookie-title" class="font-bold text-gray-900 dark:text-white mb-1">🍪 Esta web usa cookies</p>
+      <p id="cookie-desc" class="text-sm text-gray-600 dark:text-gray-400">
+        Utilizamos cookies propias y de terceros (Google Analytics, AdSense) para analizar el tráfico y mostrarte publicidad personalizada.
+        Puedes aceptar todas, solo las necesarias, o consultar nuestra
+        <a href="/politica-de-cookies" class="underline text-accent-600 dark:text-accent-400 hover:text-accent-700">Política de Cookies</a>.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2 shrink-0">
+      <button
+        id="cookie-reject"
+        class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+      >
+        Solo necesarias
+      </button>
+      <button
+        id="cookie-accept"
+        class="btn-primary text-sm py-2"
+      >
+        Aceptar todas
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var banner = document.getElementById('cookie-banner');
+    var consent = localStorage.getItem('cookie-consent');
+    if (!consent) {
+      banner.style.display = 'flex';
+    }
+
+    document.getElementById('cookie-accept').addEventListener('click', function () {
+      localStorage.setItem('cookie-consent', 'all');
+      banner.style.display = 'none';
+      // Enable Analytics / AdSense here if using consent-mode
+    });
+
+    document.getElementById('cookie-reject').addEventListener('click', function () {
+      localStorage.setItem('cookie-consent', 'necessary');
+      banner.style.display = 'none';
+    });
+  })();
+</script>

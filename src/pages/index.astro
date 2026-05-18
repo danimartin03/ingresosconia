@@ -1,0 +1,174 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const sorted = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const featured = sorted.filter(p => p.data.featured).slice(0, 3);
+const recent = sorted.slice(0, 6);
+
+const categories = [
+  { slug: 'ia', label: 'IA y Automatización', emoji: '🤖', desc: 'ChatGPT, Claude, n8n y más herramientas para automatizar y ganar dinero.' },
+  { slug: 'shopify', label: 'Shopify', emoji: '🛒', desc: 'Cómo crear, gestionar y escalar tiendas Shopify en España.' },
+  { slug: 'ganar-dinero', label: 'Ganar Dinero', emoji: '💶', desc: 'Métodos reales y probados para generar ingresos online en España.' },
+  { slug: 'herramientas', label: 'Herramientas', emoji: '🔧', desc: 'Las mejores apps, extensiones y plataformas para emprendedores digitales.' },
+];
+---
+
+<BaseLayout
+  title="IngresosConIA"
+  description="Blog honesto sobre herramientas de IA, Shopify y cómo ganar dinero online en España. Sin humo, con estrategias reales."
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-950 text-white py-20 md:py-28">
+    <div class="container-xl text-center">
+      <div class="inline-flex items-center gap-2 bg-accent-500/20 text-accent-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-8">
+        🇪🇸 Para emprendedores españoles
+      </div>
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6 max-w-4xl mx-auto">
+        Gana dinero online con
+        <span class="text-accent-400">IA y e-commerce</span>
+        — sin mentiras
+      </h1>
+      <p class="text-xl text-primary-200 mb-10 max-w-2xl mx-auto leading-relaxed">
+        Estrategias reales sobre Shopify, automatización con IA y e-commerce para el mercado español.
+        Lo que funciona en 2025, explicado sin rodeos.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/blog" class="btn-primary text-base py-3 px-8">
+          Leer el blog →
+        </a>
+        <a href="/sobre-mi" class="btn-outline border-primary-300 text-primary-200 hover:bg-primary-700 hover:text-white text-base py-3 px-8">
+          Quién soy
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 py-8">
+    <div class="container-xl">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        {[
+          { value: '18+', label: 'Artículos publicados' },
+          { value: '4', label: 'Categorías' },
+          { value: '100%', label: 'Experiencia real' },
+          { value: '€0', label: 'Coste para leer' },
+        ].map(stat => (
+          <div>
+            <p class="text-3xl font-extrabold text-accent-500">{stat.value}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured articles -->
+  {featured.length > 0 && (
+    <section class="py-16 bg-gray-50 dark:bg-gray-800/50">
+      <div class="container-xl">
+        <div class="flex items-end justify-between mb-8">
+          <div>
+            <p class="text-accent-500 font-semibold text-sm uppercase tracking-wide mb-1">Artículos destacados</p>
+            <h2 class="section-title">Lo más leído</h2>
+          </div>
+          <a href="/blog" class="hidden sm:block text-sm font-medium text-accent-600 dark:text-accent-400 hover:underline">
+            Ver todos →
+          </a>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featured.map(post => (
+            <ArticleCard
+              title={post.data.title}
+              description={post.data.description}
+              slug={post.slug}
+              pubDate={post.data.pubDate}
+              category={post.data.category}
+              readingTime={post.data.readingTime}
+              tags={post.data.tags}
+              featured={true}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Categories -->
+  <section class="py-16">
+    <div class="container-xl">
+      <div class="text-center mb-10">
+        <p class="text-accent-500 font-semibold text-sm uppercase tracking-wide mb-1">Explora por tema</p>
+        <h2 class="section-title">Categorías</h2>
+        <p class="section-subtitle">Encuentra exactamente lo que buscas</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {categories.map(cat => (
+          <a
+            href={`/categoria/${cat.slug}`}
+            class="group card p-6 border border-gray-100 dark:border-gray-700 hover:border-accent-300 dark:hover:border-accent-600 transition-all"
+          >
+            <span class="text-4xl mb-4 block">{cat.emoji}</span>
+            <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-accent-600 dark:group-hover:text-accent-400 transition-colors mb-2">
+              {cat.label}
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{cat.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent articles -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-800/50">
+    <div class="container-xl">
+      <div class="flex items-end justify-between mb-8">
+        <div>
+          <p class="text-accent-500 font-semibold text-sm uppercase tracking-wide mb-1">Últimas publicaciones</p>
+          <h2 class="section-title">Artículos recientes</h2>
+        </div>
+        <a href="/blog" class="hidden sm:block text-sm font-medium text-accent-600 dark:text-accent-400 hover:underline">
+          Ver todos →
+        </a>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {recent.map(post => (
+          <ArticleCard
+            title={post.data.title}
+            description={post.data.description}
+            slug={post.slug}
+            pubDate={post.data.pubDate}
+            category={post.data.category}
+            readingTime={post.data.readingTime}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter CTA -->
+  <section class="py-16">
+    <div class="container-xl max-w-4xl">
+      <NewsletterForm variant="card" />
+    </div>
+  </section>
+
+  <!-- About teaser -->
+  <section class="py-16 bg-gray-50 dark:bg-gray-800/50">
+    <div class="container-xl max-w-3xl text-center">
+      <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
+        ¿Por qué hacer caso a este blog?
+      </h2>
+      <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-6">
+        No soy un gurú. Soy un emprendedor español que gana dinero online a través de freelance con Shopify,
+        automatización con IA y consultoría de e-commerce. Escribo sobre lo que realmente funciona,
+        con ejemplos de mis propios proyectos y clientes.
+      </p>
+      <a href="/sobre-mi" class="btn-secondary">Leer mi historia →</a>
+    </div>
+  </section>
+</BaseLayout>

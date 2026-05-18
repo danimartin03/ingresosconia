@@ -1,0 +1,60 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 mt-16">
+  <div class="container-xl py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+
+      <!-- Brand -->
+      <div class="md:col-span-2">
+        <a href="/" class="inline-flex items-center gap-2 font-extrabold text-xl text-primary-900 dark:text-white mb-4">
+          <span class="w-8 h-8 bg-primary-900 text-white rounded-lg flex items-center justify-center text-sm font-black">$</span>
+          <span>Ingresos<span class="text-accent-500">ConIA</span></span>
+        </a>
+        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-sm">
+          Blog honesto sobre herramientas de IA, Shopify y e-commerce para emprendedores españoles.
+          Sin humo, con ejemplos reales.
+        </p>
+      </div>
+
+      <!-- Links -->
+      <div>
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Contenido</h3>
+        <ul class="space-y-2">
+          {[
+            { href: '/blog', label: 'Blog' },
+            { href: '/categoria/ia', label: 'IA y Automatización' },
+            { href: '/categoria/shopify', label: 'Shopify' },
+            { href: '/categoria/ganar-dinero', label: 'Ganar Dinero' },
+            { href: '/categoria/herramientas', label: 'Herramientas' },
+            { href: '/recursos', label: 'Recursos' },
+          ].map(l => (
+            <li><a href={l.href} class="text-sm text-gray-500 dark:text-gray-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">{l.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Legal</h3>
+        <ul class="space-y-2">
+          {[
+            { href: '/sobre-mi', label: 'Sobre mí' },
+            { href: '/contacto', label: 'Contacto' },
+            { href: '/aviso-legal', label: 'Aviso Legal' },
+            { href: '/politica-de-privacidad', label: 'Política de Privacidad' },
+            { href: '/politica-de-cookies', label: 'Política de Cookies' },
+          ].map(l => (
+            <li><a href={l.href} class="text-sm text-gray-500 dark:text-gray-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">{l.label}</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-gray-400 dark:text-gray-500">
+      <p>© {year} IngresosConIA — ingresosconia.es — Todos los derechos reservados.</p>
+      <p>Hecho con ☕ en España</p>
+    </div>
+  </div>
+</footer>

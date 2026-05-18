@@ -1,0 +1,64 @@
+---
+interface Props {
+  variant?: 'inline' | 'card';
+}
+
+const { variant = 'card' } = Astro.props;
+---
+
+{variant === 'card' ? (
+  <section class="bg-primary-900 dark:bg-primary-950 rounded-2xl p-8 md:p-12 text-white">
+    <div class="max-w-2xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 bg-accent-500/20 text-accent-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
+        📧 Newsletter semanal
+      </div>
+      <h2 class="text-3xl font-extrabold mb-4">
+        Recibe las mejores estrategias directamente en tu email
+      </h2>
+      <p class="text-primary-200 mb-8">
+        Cada semana: herramientas de IA, consejos de Shopify y métodos reales para ganar dinero online en España.
+        Sin spam, solo valor.
+      </p>
+      <form
+        class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+        onsubmit="event.preventDefault(); this.querySelector('button').textContent='¡Suscrito! 🎉'; this.querySelector('input').disabled=true; this.querySelector('button').disabled=true;"
+      >
+        <input
+          type="email"
+          placeholder="tu@email.com"
+          required
+          class="flex-1 px-4 py-3 rounded-lg text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-400 border-0"
+          aria-label="Tu email"
+        />
+        <button type="submit" class="btn-primary whitespace-nowrap">
+          Suscribirme gratis
+        </button>
+      </form>
+      <p class="text-primary-300 text-xs mt-4">
+        Al suscribirte aceptas nuestra
+        <a href="/politica-de-privacidad" class="underline hover:text-white">Política de Privacidad</a>.
+        Puedes darte de baja cuando quieras.
+      </p>
+    </div>
+  </section>
+) : (
+  <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+    <p class="font-bold text-gray-900 dark:text-white mb-1">📧 Newsletter gratis</p>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Estrategias de IA y e-commerce cada semana.</p>
+    <form
+      class="flex flex-col gap-2"
+      onsubmit="event.preventDefault(); this.querySelector('button').textContent='¡Listo! 🎉'; this.querySelector('input').disabled=true; this.querySelector('button').disabled=true;"
+    >
+      <input
+        type="email"
+        placeholder="tu@email.com"
+        required
+        class="input-field text-sm"
+        aria-label="Tu email"
+      />
+      <button type="submit" class="btn-primary text-sm py-2">
+        Suscribirme
+      </button>
+    </form>
+  </div>
+)}

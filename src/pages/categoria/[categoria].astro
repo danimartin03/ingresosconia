@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const categories = [
+    { slug: 'ia', label: 'IA y Automatización', category: 'IA' as const, desc: 'Aprende a usar ChatGPT, Claude, n8n y las mejores herramientas de inteligencia artificial para automatizar procesos y ganar dinero.' },
+    { slug: 'shopify', label: 'Shopify', category: 'Shopify' as const, desc: 'Todo lo que necesitas saber sobre Shopify en España: desde crear tu primera tienda hasta escalar un negocio de e-commerce.' },
+    { slug: 'ganar-dinero', label: 'Ganar Dinero Online', category: 'Ganar Dinero' as const, desc: 'Métodos reales y probados para generar ingresos online en España. Sin humo, sin promesas vacías.' },
+    { slug: 'herramientas', label: 'Herramientas Digitales', category: 'Herramientas' as const, desc: 'Las mejores apps, extensiones y plataformas para emprendedores digitales en 2025.' },
+  ];
+
+  return categories.map(cat => ({
+    params: { categoria: cat.slug },
+    props: cat,
+  }));
+}
+
+interface Props {
+  slug: string;
+  label: string;
+  category: 'IA' | 'Shopify' | 'Ganar Dinero' | 'Herramientas';
+  desc: string;
+}
+
+const { slug, label, category, desc } = Astro.props;
+
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .filter(p => p.data.category === category)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categoryEmoji: Record<string, string> = {
+  ia: '🤖',
+  shopify: '🛒',
+  'ganar-dinero': '💶',
+  herramientas: '🔧',
+};
+---
+
+<BaseLayout
+  title={`${label} — Artículos y Guías`}
+  description={desc}
+>
+  <div class="container-xl py-12">
+    <Breadcrumbs crumbs={[
+      { label: 'Blog', href: '/blog' },
+      { label },
+    ]} />
+
+    <div class="mt-6 text-center max-w-3xl mx-auto mb-12">
+      <span class="text-5xl mb-4 block">{categoryEmoji[slug]}</span>
+      <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">{label}</h1>
+      <p class="text-xl text-gray-500 dark:text-gray-400">{desc}</p>
+    </div>
+
+    {posts.length > 0 ? (
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {posts.map(post => (
+          <ArticleCard
+            title={post.data.title}
+            description={post.data.description}
+            slug={post.slug}
+            pubDate={post.data.pubDate}
+            category={post.data.category}
+            readingTime={post.data.readingTime}
+            tags={post.data.tags}
+            featured={post.data.featured}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="text-center text-gray-500 dark:text-gray-400">Próximamente artículos en esta categoría.</p>
+    )}
+  </div>
+</BaseLayout>

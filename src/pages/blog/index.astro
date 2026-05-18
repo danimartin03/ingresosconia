@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+const PAGE_SIZE = 10;
+const allPosts = await getCollection('blog');
+const sorted = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const page1 = sorted.slice(0, PAGE_SIZE);
+const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+---
+
+<BaseLayout
+  title="Blog — IA, Shopify y Ganar Dinero Online"
+  description="Todos los artículos de IngresosConIA: herramientas de IA, Shopify, e-commerce y métodos reales para ganar dinero online en España."
+>
+  <div class="container-xl py-12">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Blog</h1>
+      <p class="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+        Estrategias reales de IA, Shopify y e-commerce para emprendedores españoles.
+      </p>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="flex flex-wrap gap-3 mb-10 justify-center">
+      <a href="/blog" class="tag bg-primary-900 text-white">Todos</a>
+      <a href="/categoria/ia" class="tag tag-ia">IA</a>
+      <a href="/categoria/shopify" class="tag tag-shopify">Shopify</a>
+      <a href="/categoria/ganar-dinero" class="tag tag-ganar-dinero">Ganar Dinero</a>
+      <a href="/categoria/herramientas" class="tag tag-herramientas">Herramientas</a>
+    </div>
+
+    <!-- Articles grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+      {page1.map(post => (
+        <ArticleCard
+          title={post.data.title}
+          description={post.data.description}
+          slug={post.slug}
+          pubDate={post.data.pubDate}
+          category={post.data.category}
+          readingTime={post.data.readingTime}
+          tags={post.data.tags}
+          featured={post.data.featured}
+        />
+      ))}
+    </div>
+
+    <!-- Pagination -->
+    {totalPages > 1 && (
+      <nav class="flex justify-center items-center gap-2" aria-label="Paginación">
+        <span class="px-4 py-2 rounded-lg bg-primary-900 text-white text-sm font-medium">1</span>
+        {Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map(page => (
+          <a
+            href={`/blog/pagina/${page}`}
+            class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            {page}
+          </a>
+        ))}
+        <a
+          href="/blog/pagina/2"
+          class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-1"
+        >
+          Siguiente →
+        </a>
+      </nav>
+    )}
+  </div>
+</BaseLayout>

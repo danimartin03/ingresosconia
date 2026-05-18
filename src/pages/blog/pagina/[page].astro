@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleCard from '../../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths({ paginate }: { paginate: Function }) {
+  const allPosts = await getCollection('blog');
+  const sorted = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const pages = paginate(sorted, { pageSize: 10 });
+  // Skip page 1 — handled by /blog/index.astro
+  return pages.filter((p: { params: { page: string | undefined } }) => p.params.page !== undefined);
+}
+
+const { page } = Astro.props as { page: { data: any[], currentPage: number, lastPage: number, url: { prev?: string, next?: string } } };
+---
+
+<BaseLayout
+  title={`Blog — Página ${page.currentPage}`}
+  description={`Artículos de IngresosConIA — página ${page.currentPage} de ${page.lastPage}. IA, Shopify y ganar dinero online en España.`}
+>
+  <div class="container-xl py-12">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Blog</h1>
+      <p class="text-gray-500 dark:text-gray-400">Página {page.currentPage} de {page.lastPage}</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+      {page.data.map((post: any) => (
+        <ArticleCard
+          title={post.data.title}
+          description={post.data.description}
+          slug={post.slug}
+          pubDate={post.data.pubDate}
+          category={post.data.category}
+          readingTime={post.data.readingTime}
+          tags={post.data.tags}
+          featured={post.data.featured}
+        />
+      ))}
+    </div>
+
+    <!-- Pagination -->
+    <nav class="flex justify-center items-center gap-2" aria-label="Paginación">
+      {page.url.prev && (
+        <a href={page.currentPage === 2 ? '/blog' : page.url.prev.replace('/pagina/', '/blog/pagina/')} class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-1">
+          ← Anterior
+        </a>
+      )}
+      <span class="px-4 py-2 rounded-lg bg-primary-900 text-white text-sm font-medium">
+        {page.currentPage}
+      </span>
+      {page.url.next && (
+        <a href={page.url.next.replace('/pagina/', '/blog/pagina/')} class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-1">
+          Siguiente →
+        </a>
+      )}
+    </nav>
+  </div>
+</BaseLayout>

@@ -1,0 +1,153 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SocialShare from '../components/SocialShare.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags, readingTime, author, image } = post.data;
+
+const { Content } = await post.render();
+
+const allPosts = await getCollection('blog');
+
+const categorySlug = category === 'Ganar Dinero' ? 'ganar-dinero' : category.toLowerCase();
+
+const formattedDate = new Intl.DateTimeFormat('es-ES', {
+  day: 'numeric', month: 'long', year: 'numeric'
+}).format(pubDate);
+
+const siteURL = 'https://ingresosconia.es';
+const articleURL = `${siteURL}/blog/${post.slug}`;
+
+const categoryClass: Record<string, string> = {
+  'IA': 'tag-ia',
+  'Shopify': 'tag-shopify',
+  'Ganar Dinero': 'tag-ganar-dinero',
+  'Herramientas': 'tag-herramientas',
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={image ?? '/og-default.jpg'}
+  article={true}
+  pubDate={pubDate.toISOString()}
+  updatedDate={updatedDate?.toISOString()}
+  author={author}
+>
+  <div class="container-xl py-8">
+    <!-- Breadcrumbs -->
+    <Breadcrumbs crumbs={[
+      { label: 'Blog', href: '/blog' },
+      { label: category, href: `/categoria/${categorySlug}` },
+      { label: title },
+    ]} />
+
+    <div class="mt-6 lg:grid lg:grid-cols-[1fr_300px] lg:gap-12">
+      <!-- Article content -->
+      <article>
+        <!-- Header -->
+        <header class="mb-8">
+          <a href={`/categoria/${categorySlug}`} class={`tag ${categoryClass[category] ?? 'tag-ia'} mb-4 inline-block`}>
+            {category}
+          </a>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight mb-6">
+            {title}
+          </h1>
+          <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+            {description}
+          </p>
+          <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400 pb-6 border-b border-gray-200 dark:border-gray-700">
+            <span class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-full bg-primary-900 flex items-center justify-center text-white text-xs font-bold">IA</span>
+              {author}
+            </span>
+            <span>·</span>
+            <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+            <span>·</span>
+            <span class="flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              {readingTime} de lectura
+            </span>
+          </div>
+        </header>
+
+        <!-- MDX Content -->
+        <div class="prose prose-lg dark:prose-invert max-w-none
+          prose-headings:font-extrabold prose-headings:text-primary-900 dark:prose-headings:text-white
+          prose-a:text-accent-600 dark:prose-a:text-accent-400 prose-a:no-underline hover:prose-a:underline
+          prose-strong:text-gray-900 dark:prose-strong:text-white
+          prose-code:text-accent-700 dark:prose-code:text-accent-300 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+          prose-blockquote:border-accent-500 prose-blockquote:bg-accent-50 dark:prose-blockquote:bg-accent-900/10 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:not-italic
+          prose-img:rounded-xl prose-img:shadow-md
+        ">
+          <Content />
+        </div>
+
+        <!-- Tags -->
+        <div class="mt-10 flex flex-wrap gap-2">
+          {tags.map(tag => (
+            <span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm rounded-full">
+              #{tag}
+            </span>
+          ))}
+        </div>
+
+        <!-- Social share -->
+        <div class="mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl">
+          <SocialShare title={title} url={articleURL} />
+        </div>
+
+        <!-- Newsletter -->
+        <div class="mt-10">
+          <NewsletterForm variant="card" />
+        </div>
+
+        <!-- Related articles -->
+        <RelatedArticles
+          currentSlug={post.slug}
+          category={category}
+          tags={tags}
+          allPosts={allPosts}
+        />
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="hidden lg:block">
+        <div class="sticky top-24 space-y-6">
+          <NewsletterForm variant="inline" />
+
+          <!-- Categories -->
+          <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5">
+            <h3 class="font-bold text-gray-900 dark:text-white mb-3">Categorías</h3>
+            <ul class="space-y-1">
+              {[
+                { href: '/categoria/ia', label: 'IA y Automatización', tag: 'tag-ia' },
+                { href: '/categoria/shopify', label: 'Shopify', tag: 'tag-shopify' },
+                { href: '/categoria/ganar-dinero', label: 'Ganar Dinero', tag: 'tag-ganar-dinero' },
+                { href: '/categoria/herramientas', label: 'Herramientas', tag: 'tag-herramientas' },
+              ].map(c => (
+                <li>
+                  <a href={c.href} class="flex items-center gap-2 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors">
+                    <span class={`tag ${c.tag} py-0.5 px-2 text-[10px]`}>{c.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+
+const proximosRecursos = [
+  { emoji: '🎨', title: 'Pack de Temas Shopify Gratuitos', desc: 'Temas Dawn, Sense y Craft personalizados para el mercado español con traducciones y configuración inicial.' },
+  { emoji: '📧', title: 'Plantillas de Email Marketing', desc: '10 plantillas HTML para Klaviyo y Mailchimp: bienvenida, carrito abandonado, recuperación de cliente y más.' },
+  { emoji: '🤖', title: 'Guía PDF: ChatGPT para Negocios', desc: 'Guía práctica de 40 páginas con prompts listos para usar y estrategias para el mercado español.' },
+  { emoji: '✅', title: 'Checklist: Lanzar en Shopify', desc: 'Más de 80 pasos para lanzar una tienda Shopify en España: legal, SEO, apps, pagos y logística.' },
+  { emoji: '⚙️', title: 'Flujos n8n para E-commerce', desc: '8 flujos n8n exportables para automatizar pedidos, inventario, reseñas y reportes semanales.' },
+  { emoji: '📦', title: 'Kit de Inicio Dropshipping España', desc: 'Lista de proveedores europeos, plantilla de análisis de producto y guía de cumplimiento fiscal.' },
+];
+---
+
+<BaseLayout
+  title="Recursos — Próximamente"
+  description="Herramientas gratuitas, plantillas y guías para emprendedores digitales españoles. Próximamente en IngresosConIA."
+>
+  <div class="container-xl py-16 max-w-4xl">
+
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
+        🚧 En preparación
+      </div>
+      <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+        Recursos gratuitos
+      </h1>
+      <p class="text-xl text-gray-500 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto">
+        Estoy preparando una colección de recursos de calidad: plantillas, guías y herramientas
+        que uso en mis propios proyectos. Quiero que sean realmente útiles antes de publicarlos,
+        así que estoy dándoles el tiempo que merecen.
+      </p>
+    </div>
+
+    <!-- Notify CTA -->
+    <div class="bg-primary-900 dark:bg-primary-950 rounded-2xl p-8 md:p-12 text-white text-center mb-16">
+      <span class="text-4xl mb-4 block">📬</span>
+      <h2 class="text-2xl font-extrabold mb-3">Avísame cuando estén listos</h2>
+      <p class="text-primary-200 mb-6 max-w-lg mx-auto">
+        Escríbeme a <strong class="text-white">hola@ingresosconia.es</strong> con el asunto
+        <strong class="text-accent-300">"Quiero los recursos"</strong> y te mando un aviso
+        en cuanto los publique. Serás de los primeros en descargarlos.
+      </p>
+      <a
+        href="mailto:hola@ingresosconia.es?subject=Quiero%20los%20recursos&body=Hola%2C%20me%20gustar%C3%ADa%20recibir%20un%20aviso%20cuando%20publiques%20los%20recursos%20gratuitos."
+        class="btn-primary text-base py-3 px-8 inline-flex"
+      >
+        ✉️ Escribirme ahora
+      </a>
+      <p class="text-primary-300 text-sm mt-4">O también puedes suscribirte al newsletter de abajo y te entero por ahí.</p>
+    </div>
+
+    <!-- Preview cards -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">Qué estoy preparando</h2>
+      <p class="text-gray-500 dark:text-gray-400 text-center mb-8">Una vista previa de lo que llegará próximamente:</p>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {proximosRecursos.map(r => (
+          <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+            <!-- "Próximamente" badge -->
+            <span class="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+              Pronto
+            </span>
+            <span class="text-3xl mb-3 block">{r.emoji}</span>
+            <h3 class="font-bold text-gray-900 dark:text-white text-sm mb-2">{r.title}</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{r.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Newsletter as alternative -->
+    <NewsletterForm variant="card" />
+
+  </div>
+</BaseLayout>

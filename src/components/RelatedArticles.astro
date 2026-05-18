@@ -1,0 +1,55 @@
+---
+import ArticleCard from './ArticleCard.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  currentSlug: string;
+  category: string;
+  tags: string[];
+  allPosts: CollectionEntry<'blog'>[];
+}
+
+const { currentSlug, category, tags, allPosts } = Astro.props;
+
+const related = allPosts
+  .filter(p => p.slug !== currentSlug)
+  .map(p => {
+    const sharedTags = p.data.tags.filter(t => tags.includes(t)).length;
+    const sameCategory = p.data.category === category ? 2 : 0;
+    return { post: p, score: sharedTags + sameCategory };
+  })
+  .filter(x => x.score > 0)
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 3)
+  .map(x => x.post);
+
+const fallback = related.length < 3
+  ? allPosts
+      .filter(p => p.slug !== currentSlug && !related.find(r => r.slug === p.slug))
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+      .slice(0, 3 - related.length)
+  : [];
+
+const articles = [...related, ...fallback];
+---
+
+{articles.length > 0 && (
+  <section class="mt-16 not-prose">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+      Artículos relacionados
+    </h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {articles.map(post => (
+        <ArticleCard
+          title={post.data.title}
+          description={post.data.description}
+          slug={post.slug}
+          pubDate={post.data.pubDate}
+          category={post.data.category}
+          readingTime={post.data.readingTime}
+          tags={post.data.tags}
+        />
+      ))}
+    </div>
+  </section>
+)}
